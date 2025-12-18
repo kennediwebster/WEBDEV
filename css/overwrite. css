@@ -1,0 +1,14 @@
+p{
+    font-family: 'Times New Roman', Times, serif
+}
+nav {
+            background-color: lightblue;
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #ccc;
+        }
+        section {
+            padding: 40px 0;
+        }

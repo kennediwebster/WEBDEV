@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Bloom Habit Tracker</title>
+    <link rel="stylesheet" href="css/webapp.css">
+</head>
+<body>
+
+    <header>
+        <h1>Mood Bloom</h1>
+        <p>A digital garden for your daily wins.</p>
+        <a href="scratch.html">Back to Scratch Page</a>
+    </header>
+
+    <div class="main-layout">
+        
+        <div id="garden"></div>
+
+        <div class="app-container">
+            <div class="guide">
+                <h3>📖 Instructions</h3>
+                <p><strong>1. Input:</strong> Type a habit and click <strong>Plant</strong>.</p>
+                <p><strong>2. Complete:</strong> Click <strong>Done</strong> to make a flower bloom.</p>
+                <p><strong>3. Save:</strong> Your garden is saved automatically in this browser!</p>
+            </div>
+
+            <div class="input-box">
+                <input type="text" id="habitInput" placeholder="Enter a new habit...">
+                <button class="btn-add" onclick="addHabit()">Plant</button>
+            </div>
+
+            <ul id="habitList"></ul>
+        </div>
+
+    </div>
+
+    <script>
+        let habits = JSON.parse(localStorage.getItem('bloomHabits')) || [];
+
+        function render() {
+            const list = document.getElementById('habitList');
+            const garden = document.getElementById('garden');
+            list.innerHTML = '';
+            garden.innerHTML = '';
+
+            habits.forEach((habit, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span class="task-text ${habit.completed ? 'task-done' : ''}">${habit.text}</span>
+                    <div>
+                        <button class="btn-done" onclick="toggleHabit(${index})">${habit.completed ? 'Undo' : 'Done'}</button>
+                        <button class="btn-del" onclick="deleteHabit(${index})">×</button>
+                    </div>
+                `;
+                list.appendChild(li);
+
+                if (habit.completed) {
+                    const flower = document.createElement('div');
+                    flower.className = 'flower';
+                    const hue = (habit.text.length * 40) % 360; 
+                    flower.innerHTML = `
+                        <div class="petal" style="background-color: hsl(${hue}, 70%, 70%)"></div>
+                        <div class="stem"></div>
+                    `;
+                    garden.appendChild(flower);
+                }
+            });
+            localStorage.setItem('bloomHabits', JSON.stringify(habits));
+        }
+
+        function addHabit() {
+            const input = document.getElementById('habitInput');
+            if (input.value.trim() !== "") {
+                habits.push({ text: input.value, completed: false });
+                input.value = '';
+                render();
+            }
+        }
+
+        function toggleHabit(index) {
+            habits[index].completed = !habits[index].completed;
+            render();
+        }
+
+        function deleteHabit(index) {
+            habits.splice(index, 1);
+            render();
+        }
+
+        render();
+    </script>
+</body>
+</html>
